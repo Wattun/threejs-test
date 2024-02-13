@@ -43,7 +43,7 @@ async function init() {
   // Boxes
 
   const geometryBox = new THREE.BoxGeometry(0.075, 0.075, 0.075);
-  boxes = new THREE.InstancedMesh(geometryBox, material, 400);
+  const boxes = new THREE.InstancedMesh(geometryBox, material, 400);
   boxes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   boxes.castShadow = true;
   boxes.receiveShadow = true;
@@ -59,7 +59,7 @@ async function init() {
   // Spheres
 
   const geometrySphere = new THREE.IcosahedronGeometry(0.05, 4);
-  spheres = new THREE.InstancedMesh(geometrySphere, material, 400);
+  const spheres = new THREE.InstancedMesh(geometrySphere, material, 400);
   spheres.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   spheres.castShadow = true;
   spheres.receiveShadow = true;
@@ -67,7 +67,7 @@ async function init() {
   scene.add(spheres);
 
   for (let i = 0; i < spheres.count; i++) {
-    matrix.serPosition(Math.random() - 0.5, Math.random() * 2, Math.random() - 0.5);
+    matrix.setPosition(Math.random() - 0.5, Math.random() * 2, Math.random() - 0.5);
     spheres.setMatrixAt(i, matrix);
     spheres.setColorAt(i, color, setHex(0xffffff * Math.random()));
   }
