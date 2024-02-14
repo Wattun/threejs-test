@@ -3,18 +3,23 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { AmmoPhysics } from "three/addons/physics/AmmoPhysics.js";
 import Stats from "three/addons/libs/stats.module.js";
 
+let camera, scene, renderer, stats;
+let physics, position;
+
+let boxes, spheres;
+
 init();
 
 async function init() {
 
-  const physics = await AmmoPhysics();
-  const position = new THREE.Vector3();
+  physics = await AmmoPhysics();
+  position = new THREE.Vector3();
 
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(-1, 1.5, 2);
   camera.lookAt(0, 0.5, 0);
 
-  const scene = new THREE.Scene();
+  scene = new THREE.Scene();
   scene.background = new THREE.Color(0x666666);
 
   const hemiLight = new THREE.HemisphereLight();
@@ -43,7 +48,7 @@ async function init() {
   // Boxes
 
   const geometryBox = new THREE.BoxGeometry(0.075, 0.075, 0.075);
-  const boxes = new THREE.InstancedMesh(geometryBox, material, 400);
+  boxes = new THREE.InstancedMesh(geometryBox, material, 400);
   boxes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   boxes.castShadow = true;
   boxes.receiveShadow = true;
@@ -59,7 +64,7 @@ async function init() {
   // Spheres
 
   const geometrySphere = new THREE.IcosahedronGeometry(0.05, 4);
-  const spheres = new THREE.InstancedMesh(geometrySphere, material, 400);
+  spheres = new THREE.InstancedMesh(geometrySphere, material, 400);
   spheres.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   spheres.castShadow = true;
   spheres.receiveShadow = true;
@@ -69,13 +74,13 @@ async function init() {
   for (let i = 0; i < spheres.count; i++) {
     matrix.setPosition(Math.random() - 0.5, Math.random() * 2, Math.random() - 0.5);
     spheres.setMatrixAt(i, matrix);
-    spheres.setColorAt(i, color, setHex(0xffffff * Math.random()));
+    spheres.setColorAt(i, color.setHex(0xffffff * Math.random()));
   }
 
   physics.addScene(scene);
 
   renderer = new THREE.WebGL1Renderer({ antialias: true });
-  renderer.serPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   document.body.appendChild(renderer.domElement);
@@ -83,7 +88,7 @@ async function init() {
   stats = new Stats();
   document.body.appendChild(stats.dom);
 
-  const controls = new OrbitControls(camera, renderer, domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.y = 0.5;
   controls.update();
 
